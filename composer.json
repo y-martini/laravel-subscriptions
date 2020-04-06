@@ -1,0 +1,28 @@
+{
+    "name": "yuriy-martini/laravel-subscriptions",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yuriy Martini",
+            "email": "yuriy.martini@live.it"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "illuminate/database": "^6.0",
+        "illuminate/support": "^6.0",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "YuriyMartini\\Subscriptions\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "YuriyMartini\\Subscriptions\\ServiceProvider"
+            ]
+        }
+    }
+}

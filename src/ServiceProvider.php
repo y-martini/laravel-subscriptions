@@ -1,8 +1,15 @@
 <?php
+
 namespace YuriyMartini\Subscriptions;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use YuriyMartini\Subscriptions\Contracts\Plan as PlanContract;
+use YuriyMartini\Subscriptions\Contracts\Service as ServiceContract;
+use YuriyMartini\Subscriptions\Contracts\Subscription as SubscriptionContract;
+use YuriyMartini\Subscriptions\Models\Plan;
+use YuriyMartini\Subscriptions\Models\Service;
+use YuriyMartini\Subscriptions\Models\Subscription;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -11,12 +18,21 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
-        $this->config();
-
-        $this->migrations();
+        $this->bootMigrations();
+        $this->loadFactories();
+        $this->bootConfig();
     }
 
-    private function config()
+    protected function bootMigrations()
+    {
+        $this->publishes([
+            __DIR__ . '/../database/migrations/' => App::databasePath('migrations')
+        ], ['migrations', 'subscriptions', 'subscriptions-migrations']);
+
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+    }
+
+    private function bootConfig()
     {
         $this->publishes([
             __DIR__ . '/../config/subscriptions.php' => App::configPath('subscriptions.php'),
@@ -27,11 +43,9 @@ class ServiceProvider extends BaseServiceProvider
         );
     }
 
-    private function migrations()
+    protected function loadFactories()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/2020_01_01_000100_create_subscriptions_services_table.php');
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/2020_01_01_000200_create_subscriptions_plans_table.php');
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/2020_01_01_000300_create_subscriptions_subscriptions_table.php');
+        $this->loadFactoriesFrom(__DIR__ . '/../database/factories');
     }
 
     /**
@@ -39,6 +53,13 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        //
+        $this->registerBindings();
+    }
+
+    protected function registerBindings()
+    {
+        $this->app->bind(PlanContract::class, Plan::class);
+        $this->app->bind(ServiceContract::class, Service::class);
+        $this->app->bind(SubscriptionContract::class, Subscription::class);
     }
 }

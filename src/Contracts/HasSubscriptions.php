@@ -4,7 +4,7 @@ namespace YuriyMartini\Subscriptions\Contracts;
 
 use Illuminate\Database\Eloquent\Collection;
 
-interface Service extends Model
+interface HasSubscriptions extends Model
 {
-    public function getPlans(): Collection;
+    public function getSubscriptions(): Collection;
 }

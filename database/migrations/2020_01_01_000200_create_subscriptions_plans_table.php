@@ -3,11 +3,12 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use YuriyMartini\Subscriptions\Traits\UsesTables;
+use YuriyMartini\Subscriptions\Enums\BillingInterval;
+use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
 
 class CreateSubscriptionsPlansTable extends Migration
 {
-    use UsesTables;
+    use HasContractsBindings;
 
     /**
      * Run the migrations.
@@ -16,22 +17,29 @@ class CreateSubscriptionsPlansTable extends Migration
      */
     public function up()
     {
-        Schema::create(static::getPlansTable(), function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('service_id');
-            $table->string('key');
-            $table->string('name');
-            $table->decimal('price');
-            $table->enum('billing_interval_unit', ['days', 'weeks', 'months', 'years'])->default('months');
-            $table->unsignedSmallInteger('billing_interval_value')->default(1);
+        $service = static::resolveServiceContract();
+        $plan = static::resolvePlanContract();
+
+        Schema::create($plan->getTable(), function (Blueprint $table) use (
+            $plan,
+            $service
+        ) {
+            $table->bigIncrements($plan->getKeyName());
             $table->timestamps();
 
-            $table->unique(['service_id', 'key']);
+            $table->unsignedBigInteger($service->getForeignKey());
+            $table->string('key');
+            $table->string('name');
+            $table->unsignedDecimal('price');
+            $table->enum('billing_interval_unit', BillingInterval::values())->default(BillingInterval::defaultValue());
+            $table->unsignedSmallInteger('billing_interval_value')->default(1);
+
+            $table->unique([$service->getForeignKey(), 'key']);
 
             $table
-                ->foreign('service_id')
-                ->on(static::getServicesTable())
-                ->references('id');
+                ->foreign($service->getForeignKey())
+                ->on($service->getTable())
+                ->references($service->getKeyName());
         });
     }
 
@@ -42,6 +50,6 @@ class CreateSubscriptionsPlansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(static::getPlansTable());
+        Schema::dropIfExists(static::resolvePlanContract()->getTable());
     }
 }

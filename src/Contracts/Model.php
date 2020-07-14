@@ -1,8 +1,6 @@
 <?php
 
-
 namespace YuriyMartini\Subscriptions\Contracts;
-
 
 use ArrayAccess;
 use Illuminate\Contracts\Queue\QueueableEntity;
@@ -14,9 +12,22 @@ use JsonSerializable;
 interface Model extends Arrayable, ArrayAccess, Jsonable, JsonSerializable, QueueableEntity, UrlRoutable
 {
     /**
-     * Get the value of the model's primary key.
-     *
+     * @return string
+     */
+    public function getTable();
+
+    /**
+     * @return string
+     */
+    public function getKeyName();
+
+    /**
      * @return mixed
      */
     public function getKey();
+
+    /**
+     * @return string
+     */
+    public function getForeignKey();
 }

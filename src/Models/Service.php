@@ -2,27 +2,23 @@
 
 namespace YuriyMartini\Subscriptions\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use YuriyMartini\Subscriptions\Contracts\Service as ServiceContract;
-use YuriyMartini\Subscriptions\Traits\UsesModels;
-use YuriyMartini\Subscriptions\Traits\UsesTables;
+use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
 
 /**
  * @property string name
+ * @property Collection plans
  */
 class Service extends Model implements ServiceContract
 {
-    use UsesTables, UsesModels;
+    use HasContractsBindings;
 
-    protected $fillable = [
-        'key',
-        'name',
-    ];
-
-    public function getTable()
+    public function getPlans(): Collection
     {
-        return static::getServicesTable();
+        return $this->plans;
     }
 
     /**
@@ -30,6 +26,6 @@ class Service extends Model implements ServiceContract
      */
     public function plans()
     {
-        return $this->hasMany(static::getPlanModel(), 'service_id');
+        return $this->hasMany(static::getPlanContractBinding());
     }
 }

@@ -2,127 +2,43 @@
 
 namespace YuriyMartini\Subscriptions\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
+use YuriyMartini\Subscriptions\Contracts\HasSubscriptions;
+use YuriyMartini\Subscriptions\Contracts\Plan as PlanContract;
 use YuriyMartini\Subscriptions\Contracts\Subscription as SubscriptionContract;
-use YuriyMartini\Subscriptions\Traits\UsesModels;
-use YuriyMartini\Subscriptions\Traits\UsesTables;
+use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
 
 /**
  * @property string status
- * @property \YuriyMartini\Subscriptions\Contracts\Plan plan
- * @property Model user
+ * @property PlanContract plan
+ * @property HasSubscriptions $customer
  */
 class Subscription extends Model implements SubscriptionContract
 {
-    use UsesTables, UsesModels;
-
-    const STATUS_ACTIVE = 'active';
-    const STATUS_UNPAID = 'unpaid';
-    const STATUS_CANCELLED = 'cancelled';
-    const DEFAULT_STATUS = Subscription::STATUS_UNPAID;
-
-    protected $fillable = [
-        'user_id',
-        'plan_id',
-        'status',
-        'start_date',
-        'end_date',
-    ];
+    use HasContractsBindings;
 
     protected $dates = [
         'start_date',
         'end_date',
     ];
 
-    /**
-     * @inheritDoc
-     */
-    public function getTable()
+    public function getPlan(): PlanContract
     {
-        return static::getSubscriptionsTable();
+        return $this->plan;
     }
 
-    protected static function getUserModel()
+    public function getCustomer(): HasSubscriptions
     {
-        return Config::get('subscriptions.users.model');
+        return $this->customer;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function user()
-    {
-        return $this->belongsTo(static::getUserModel(), 'user_id');
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function plan()
     {
-        return $this->belongsTo(static::getPlanModel(), 'plan_id');
+        return $this->belongsTo(static::getPlanContractBinding(), static::resolvePlanContract()->getForeignKey());
     }
 
-    public function ScopeActive(Builder $query)
+    public function user()
     {
-        return $query->where('status', static::STATUS_ACTIVE);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isActive()
-    {
-        return $this->status === static::STATUS_ACTIVE;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isUnpaid()
-    {
-        return $this->status === static::STATUS_UNPAID;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isCancelled()
-    {
-        return $this->status === static::STATUS_CANCELLED;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function activate()
-    {
-        return $this->update(['status' => static::STATUS_ACTIVE]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function renew()
-    {
-        return $this->activate();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function markAsUnpaid()
-    {
-        return $this->update(['status' => static::STATUS_UNPAID]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function cancel()
-    {
-        return $this->update(['status' => static::STATUS_CANCELLED]);
+        return $this->belongsTo(static::getHasSubscriptionsContractBinding(), static::resolveHasSubscriptionsContract()->getForeignKey());
     }
 }

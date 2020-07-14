@@ -3,11 +3,11 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use YuriyMartini\Subscriptions\Traits\UsesTables;
+use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
 
 class CreateSubscriptionsServicesTable extends Migration
 {
-    use UsesTables;
+    use HasContractsBindings;
 
     /**
      * Run the migrations.
@@ -16,11 +16,12 @@ class CreateSubscriptionsServicesTable extends Migration
      */
     public function up()
     {
-        Schema::create(static::getServicesTable(), function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create(static::resolveServiceContract()->getTable(), function (Blueprint $table) {
+            $table->bigIncrements(static::resolveServiceContract()->getKeyName());
+            $table->timestamps();
+
             $table->string('key')->unique();
             $table->string('name');
-            $table->timestamps();
         });
     }
 
@@ -31,6 +32,6 @@ class CreateSubscriptionsServicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(static::getServicesTable());
+        Schema::dropIfExists(static::resolveServiceContract()->getTable());
     }
 }

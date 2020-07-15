@@ -4,11 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use YuriyMartini\Subscriptions\Enums\SubscriptionStatus;
-use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
+use YuriyMartini\Subscriptions\Traits\InteractsWithContractsBindings;
 
 class CreateSubscriptionsSubscriptionsTable extends Migration
 {
-    use HasContractsBindings;
+    use InteractsWithContractsBindings;
 
     /**
      * Run the migrations.
@@ -30,6 +30,7 @@ class CreateSubscriptionsSubscriptionsTable extends Migration
             $table->enum('status', SubscriptionStatus::values())->default(SubscriptionStatus::defaultValue());
             $table->date('start_date')->useCurrent();
             $table->date('end_date');
+            $table->date('expiring_notification_date')->nullable();
 
             $table->unique([$customer->getForeignKey(), $plan->getForeignKey()]);
 

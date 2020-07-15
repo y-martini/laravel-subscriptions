@@ -4,12 +4,17 @@ namespace YuriyMartini\Subscriptions;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use YuriyMartini\Subscriptions\Console\Commands\Expiring;
+use YuriyMartini\Subscriptions\Contracts\Coupon as CouponContract;
+use YuriyMartini\Subscriptions\Contracts\ExpiringNotification as ExpiringNotificationContract;
 use YuriyMartini\Subscriptions\Contracts\Plan as PlanContract;
 use YuriyMartini\Subscriptions\Contracts\Service as ServiceContract;
 use YuriyMartini\Subscriptions\Contracts\Subscription as SubscriptionContract;
+use YuriyMartini\Subscriptions\Models\Coupon;
 use YuriyMartini\Subscriptions\Models\Plan;
 use YuriyMartini\Subscriptions\Models\Service;
 use YuriyMartini\Subscriptions\Models\Subscription;
+use YuriyMartini\Subscriptions\Notifications\Expiring as ExpiringNotification;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -21,6 +26,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->bootMigrations();
         $this->loadFactories();
         $this->bootConfig();
+        $this->bootCommands();
+        $this->bootTranslations();
     }
 
     protected function bootMigrations()
@@ -45,7 +52,23 @@ class ServiceProvider extends BaseServiceProvider
 
     protected function loadFactories()
     {
-        $this->loadFactoriesFrom(__DIR__ . '/../database/factories');
+//        $this->loadFactoriesFrom(__DIR__ . '/../database/factories');
+    }
+
+    protected function bootCommands()
+    {
+        $this->commands([
+            Expiring::class,
+        ]);
+    }
+
+    protected function bootTranslations()
+    {
+        $this->publishes([
+            __DIR__ . '/../resources/lang/' => App::resourcePath('lang/vendor/subscriptions')
+        ], ['translations', 'subscriptions', 'subscriptions-translations']);
+
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang/', 'subscriptions');
     }
 
     /**
@@ -61,5 +84,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind(PlanContract::class, Plan::class);
         $this->app->bind(ServiceContract::class, Service::class);
         $this->app->bind(SubscriptionContract::class, Subscription::class);
+        $this->app->bind(ExpiringNotificationContract::class, ExpiringNotification::class);
+        $this->app->bind(CouponContract::class, Coupon::class);
     }
 }

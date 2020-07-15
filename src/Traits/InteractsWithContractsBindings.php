@@ -3,12 +3,13 @@
 namespace YuriyMartini\Subscriptions\Traits;
 
 use Illuminate\Container\Container;
+use YuriyMartini\Subscriptions\Contracts\Coupon;
 use YuriyMartini\Subscriptions\Contracts\HasSubscriptions;
 use YuriyMartini\Subscriptions\Contracts\Plan;
 use YuriyMartini\Subscriptions\Contracts\Service;
 use YuriyMartini\Subscriptions\Contracts\Subscription;
 
-trait HasContractsBindings
+trait InteractsWithContractsBindings
 {
     public static function resolveHasSubscriptionsContract(): HasSubscriptions
     {
@@ -38,6 +39,13 @@ trait HasContractsBindings
         return $subscription;
     }
 
+    public static function resolveCouponContract(): Coupon
+    {
+        /** @var Coupon $coupon */
+        $coupon = Container::getInstance()->make(Coupon::class);
+        return $coupon;
+    }
+
     public static function getHasSubscriptionsContractBinding(): string
     {
         return get_class(Container::getInstance()->get(HasSubscriptions::class));
@@ -56,5 +64,10 @@ trait HasContractsBindings
     public static function getSubscriptionContractBinding(): string
     {
         return get_class(Container::getInstance()->get(Subscription::class));
+    }
+
+    public static function getCouponContractBinding(): string
+    {
+        return get_class(Container::getInstance()->get(Coupon::class));
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\QueueableEntity;
 use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Database\Eloquent\Builder;
 use JsonSerializable;
 
 interface Model extends Arrayable, ArrayAccess, Jsonable, JsonSerializable, QueueableEntity, UrlRoutable
@@ -30,4 +31,9 @@ interface Model extends Arrayable, ArrayAccess, Jsonable, JsonSerializable, Queu
      * @return string
      */
     public function getForeignKey();
+
+    /**
+     * @return Builder
+     */
+    public static function query();
 }

@@ -3,9 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use YuriyMartini\Subscriptions\Enums\DiscountType;
 use YuriyMartini\Subscriptions\Traits\InteractsWithContractsBindings;
 
-class CreateSubscriptionsServicesTable extends Migration
+class CreateSubscriptionsCouponsTable extends Migration
 {
     use InteractsWithContractsBindings;
 
@@ -16,12 +17,16 @@ class CreateSubscriptionsServicesTable extends Migration
      */
     public function up()
     {
-        Schema::create(static::resolveServiceContract()->getTable(), function (Blueprint $table) {
-            $table->bigIncrements(static::resolveServiceContract()->getKeyName());
+        $coupon = static::resolveCouponContract();
+
+        Schema::create($coupon->getTable(), function (Blueprint $table) use ($coupon) {
+            $table->bigIncrements($coupon->getKeyName());
             $table->timestamps();
 
-            $table->string('key')->unique();
             $table->string('name');
+            $table->enum('type', DiscountType::values());
+            $table->unsignedDecimal('value');
+            $table->boolean('is_recurrent')->default(false);
         });
     }
 
@@ -32,6 +37,6 @@ class CreateSubscriptionsServicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(static::resolveServiceContract()->getTable());
+        Schema::dropIfExists(static::resolveCouponContract()->getTable());
     }
 }

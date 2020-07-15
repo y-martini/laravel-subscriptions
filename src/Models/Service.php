@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use YuriyMartini\Subscriptions\Contracts\Service as ServiceContract;
-use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
+use YuriyMartini\Subscriptions\Traits\InteractsWithContractsBindings;
 
 /**
  * @property string name
@@ -14,7 +14,7 @@ use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
  */
 class Service extends Model implements ServiceContract
 {
-    use HasContractsBindings;
+    use InteractsWithContractsBindings;
 
     public function getPlans(): Collection
     {

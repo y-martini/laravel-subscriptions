@@ -1,11 +1,10 @@
 <?php
 
-namespace YuriyMartini\Subscriptions;
+namespace YuriyMartini\Subscriptions\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
 
 /**
  * @mixin Model
@@ -13,7 +12,7 @@ use YuriyMartini\Subscriptions\Traits\HasContractsBindings;
  */
 trait HasSubscriptions
 {
-    use HasContractsBindings;
+    use InteractsWithContractsBindings;
 
     public function getSubscriptions(): Collection
     {

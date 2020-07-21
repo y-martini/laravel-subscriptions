@@ -6,11 +6,11 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
-use YuriyMartini\Subscriptions\Contracts\ExpiringNotification;
+use YuriyMartini\Subscriptions\Contracts\ExpiringNotification as ExpiringNotificationContract;
 use YuriyMartini\Subscriptions\Contracts\HasSubscriptions;
 use YuriyMartini\Subscriptions\Contracts\Subscription;
 
-class Expiring extends Notification implements ExpiringNotification
+class ExpiringNotification extends Notification implements ExpiringNotificationContract
 {
     /**
      * @var Subscription
@@ -47,9 +47,9 @@ class Expiring extends Notification implements ExpiringNotification
             ->line(Lang::get('subscriptions::notifications.expiring.intro'))
             ->line(Lang::get('subscriptions::notifications.expiring.body'));
 
-        if ($verificationUrl = $notifiable->getSubscriptionUrl($this->subscription)){
+        if ($url = $notifiable->getSubscriptionUrl($this->subscription)){
             $message
-                ->action(Lang::get('subscriptions::notifications.expiring.action_text'), $verificationUrl)
+                ->action(Lang::get('subscriptions::notifications.expiring.action_text'), $url)
                 ->line(Lang::get('subscriptions::notifications.expiring.outro'));
         }
 

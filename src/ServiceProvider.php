@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use YuriyMartini\Subscriptions\Console\Commands\Expiring;
 use YuriyMartini\Subscriptions\Contracts\Coupon as CouponContract;
+use YuriyMartini\Subscriptions\Contracts\ExpiredNotification as ExpiredNotificationContract;
 use YuriyMartini\Subscriptions\Contracts\ExpiringNotification as ExpiringNotificationContract;
 use YuriyMartini\Subscriptions\Contracts\Plan as PlanContract;
 use YuriyMartini\Subscriptions\Contracts\Service as ServiceContract;
@@ -14,10 +15,23 @@ use YuriyMartini\Subscriptions\Models\Coupon;
 use YuriyMartini\Subscriptions\Models\Plan;
 use YuriyMartini\Subscriptions\Models\Service;
 use YuriyMartini\Subscriptions\Models\Subscription;
-use YuriyMartini\Subscriptions\Notifications\Expiring as ExpiringNotification;
+use YuriyMartini\Subscriptions\Notifications\ExpiringNotification;
 
 class ServiceProvider extends BaseServiceProvider
 {
+    /**
+     * All of the container bindings that should be registered.
+     *
+     * @var array
+     */
+    public $bindings = [
+        CouponContract::class => Coupon::class,
+        ExpiringNotificationContract::class => ExpiringNotification::class,
+        PlanContract::class => Plan::class,
+        ServiceContract::class => Service::class,
+        SubscriptionContract::class => Subscription::class,
+    ];
+
     /**
      * Bootstrap the application services.
      */
@@ -76,15 +90,6 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->registerBindings();
-    }
-
-    protected function registerBindings()
-    {
-        $this->app->bind(PlanContract::class, Plan::class);
-        $this->app->bind(ServiceContract::class, Service::class);
-        $this->app->bind(SubscriptionContract::class, Subscription::class);
-        $this->app->bind(ExpiringNotificationContract::class, ExpiringNotification::class);
-        $this->app->bind(CouponContract::class, Coupon::class);
+        //
     }
 }

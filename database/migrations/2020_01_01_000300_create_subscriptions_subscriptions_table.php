@@ -31,6 +31,7 @@ class CreateSubscriptionsSubscriptionsTable extends Migration
             $table->date('start_date')->useCurrent();
             $table->date('end_date');
             $table->date('expiring_notification_date')->nullable();
+            $table->date('expired_notification_date')->nullable();
 
             $table->unique([$customer->getForeignKey(), $plan->getForeignKey()]);
 

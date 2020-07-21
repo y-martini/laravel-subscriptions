@@ -15,6 +15,7 @@ use YuriyMartini\Subscriptions\Models\Coupon;
 use YuriyMartini\Subscriptions\Models\Plan;
 use YuriyMartini\Subscriptions\Models\Service;
 use YuriyMartini\Subscriptions\Models\Subscription;
+use YuriyMartini\Subscriptions\Notifications\ExpiredNotification;
 use YuriyMartini\Subscriptions\Notifications\ExpiringNotification;
 
 class ServiceProvider extends BaseServiceProvider
@@ -26,6 +27,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public $bindings = [
         CouponContract::class => Coupon::class,
+        ExpiredNotificationContract::class => ExpiredNotification::class,
         ExpiringNotificationContract::class => ExpiringNotification::class,
         PlanContract::class => Plan::class,
         ServiceContract::class => Service::class,

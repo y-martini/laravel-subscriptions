@@ -13,11 +13,12 @@ use YuriyMartini\Subscriptions\Traits\InteractsWithContractsBindings;
 
 /**
  * @property string status
- * @property PlanContract plan
- * @property HasSubscriptions customer
+ * @property PlanContract|Model plan
+ * @property HasSubscriptions|Model customer
  * @property Carbon start_date
  * @property Carbon end_date
  * @property Carbon|null expiring_notification_date
+ * @property Carbon|null expired_notification_date
  * @property Collection coupons
  */
 class Subscription extends Model implements SubscriptionContract
@@ -77,9 +78,24 @@ class Subscription extends Model implements SubscriptionContract
         $this->update(['expiring_notification_date' => $date]);
     }
 
+    public function getExpiredNotificationDate(): ?Carbon
+    {
+        return $this->expired_notification_date;
+    }
+
+    public function setExpiredNotificationDate(Carbon $date)
+    {
+        $this->update(['expired_notification_date' => $date]);
+    }
+
     public function getStatus(): SubscriptionStatus
     {
         return SubscriptionStatus::create($this->status);
+    }
+
+    public function setStatus(SubscriptionStatus $status)
+    {
+        $this->update(['status' => $status->value()]);
     }
 
     public function getCoupons(): Collection

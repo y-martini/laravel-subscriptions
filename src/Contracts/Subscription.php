@@ -20,7 +20,13 @@ interface Subscription extends Model
 
     public function setExpiringNotificationDate(Carbon $date);
 
+    public function getExpiredNotificationDate(): ?Carbon;
+
+    public function setExpiredNotificationDate(Carbon $date);
+
     public function getStatus(): SubscriptionStatus;
+
+    public function setStatus(SubscriptionStatus $status);
 
     public function getCoupons(): Collection;
 }

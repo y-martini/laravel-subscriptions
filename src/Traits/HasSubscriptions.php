@@ -38,8 +38,9 @@ trait HasSubscriptions
 
     /**
      * @param  Builder|QueryBuilder  $query
+     * @param  bool  $not
      */
-    public static function scopeActiveSubscriptions($query)
+    public static function scopeActiveSubscriptions($query, bool $not = false)
     {
         $query
             ->whereExists(function (QueryBuilder $query) {
@@ -51,6 +52,6 @@ trait HasSubscriptions
                     ->from($subscription->getTable())
                     ->whereRaw("{$hasSubscriptions->getTable()}.{$hasSubscriptions->getKeyName()} = {$subscription->getTable()}.{$hasSubscriptions->getForeignKey()}")
                     ->where("{$subscription->getTable()}.status", SubscriptionStatus::ACTIVE);
-            });
+            }, 'and', $not);
     }
 }

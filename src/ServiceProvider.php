@@ -68,7 +68,7 @@ class ServiceProvider extends BaseServiceProvider
 
     protected function loadFactories()
     {
-//        $this->loadFactoriesFrom(__DIR__ . '/../database/factories');
+        $this->loadFactoriesFrom(__DIR__ . '/../database/factories');
     }
 
     protected function bootCommands()

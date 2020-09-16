@@ -2,6 +2,8 @@
 
 namespace YuriyMartini\Subscriptions\Notifications;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
@@ -10,8 +12,10 @@ use YuriyMartini\Subscriptions\Contracts\ExpiringNotification as ExpiringNotific
 use YuriyMartini\Subscriptions\Contracts\HasSubscriptions;
 use YuriyMartini\Subscriptions\Contracts\Subscription;
 
-class ExpiringNotification extends Notification implements ExpiringNotificationContract
+class ExpiringNotification extends Notification implements ExpiringNotificationContract, ShouldQueue
 {
+    use Queueable;
+
     /**
      * @var Subscription
      */
@@ -47,12 +51,13 @@ class ExpiringNotification extends Notification implements ExpiringNotificationC
             ->line(Lang::get('subscriptions::notifications.expiring.intro'))
             ->line(Lang::get('subscriptions::notifications.expiring.body'));
 
-        if ($url = $notifiable->getSubscriptionUrl($this->subscription)){
+        if ($url = $notifiable->getSubscriptionUrl($this->subscription)) {
             $message
                 ->action(Lang::get('subscriptions::notifications.expiring.action_text'), $url)
                 ->line(Lang::get('subscriptions::notifications.expiring.outro'));
         }
 
-        return $message->salutation(Lang::get('subscriptions::notifications.expiring.salutation', ['name' => Config::get('app.name')]));
+        return $message->salutation(Lang::get('subscriptions::notifications.expiring.salutation',
+            ['name' => Config::get('app.name')]));
     }
 }

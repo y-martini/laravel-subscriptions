@@ -2,6 +2,8 @@
 
 namespace YuriyMartini\Subscriptions\Notifications;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
@@ -10,8 +12,10 @@ use YuriyMartini\Subscriptions\Contracts\ExpiredNotification as ExpiredNotificat
 use YuriyMartini\Subscriptions\Contracts\HasSubscriptions;
 use YuriyMartini\Subscriptions\Contracts\Subscription;
 
-class ExpiredNotification extends Notification implements ExpiredNotificationContract
+class ExpiredNotification extends Notification implements ExpiredNotificationContract, ShouldQueue
 {
+    use Queueable;
+
     /**
      * @var Subscription
      */

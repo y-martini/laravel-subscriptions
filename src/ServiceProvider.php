@@ -4,6 +4,7 @@ namespace YuriyMartini\Subscriptions;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use YuriyMartini\Subscriptions\Console\Commands\Expired;
 use YuriyMartini\Subscriptions\Console\Commands\Expiring;
 use YuriyMartini\Subscriptions\Contracts\Coupon as CouponContract;
 use YuriyMartini\Subscriptions\Contracts\ExpiredNotification as ExpiredNotificationContract;
@@ -74,6 +75,7 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootCommands()
     {
         $this->commands([
+            Expired::class,
             Expiring::class,
         ]);
     }
